@@ -1,19 +1,21 @@
 locals {
-  name    = var.name != null ? var.name : var.product
-  creator = "terraform"
+  name      = var.name != null ? var.name : var.product
+  full_name = "${local.name}-${var.environment}"
 
-  defaulted_tags = merge(
+  chatbot_role_arn = var.chatbot_role_arn != null ? var.chatbot_role_arn : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/amazonq-slack-chat-role"
+
+  default_tags = merge(
     var.tags,
     {
       Name                                      = local.name
       "${var.organization}:billing:product"     = var.product
       "${var.organization}:billing:environment" = var.environment
-      creator                                   = local.creator
+      "${var.organization}:billing:owner"       = var.owner
+      creator                                   = "terraform"
       repo                                      = var.repo
     }
   )
-
-  tags = merge({ for k, v in local.defaulted_tags : k => v if lookup(data.aws_default_tags.common_tags.tags, k, "") != v })
+  tags = merge({ for k, v in local.default_tags : k => v if lookup(data.aws_default_tags.common_tags.tags, k, "") != v })
 }
 
 data "aws_default_tags" "common_tags" {}

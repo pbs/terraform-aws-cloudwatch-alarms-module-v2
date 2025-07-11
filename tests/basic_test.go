@@ -4,6 +4,6 @@ import (
 	"testing"
 )
 
-func TestBasicExample(t *testing.T) {
-	testTemplate(t, "basic")
+func TestKinesisExample(t *testing.T) {
+	testCloudWatchAlarm(t, "basic")
 }

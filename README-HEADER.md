@@ -1,4 +1,4 @@
-# PBS TF MOD_TITLE
+# PBS TF CloudWatch Alarms Module v2
 
 ## Installation
 
@@ -7,7 +7,7 @@
 Use this URL for the source of the module. See the usage examples below for more details.
 
 ```hcl
-github.com/pbs/terraform-aws-MOD_NAME?ref=x.y.z
+github.com/pbs/terraform-aws-cloudwatch-alarms-module-v2?ref=x.y.z
 ```
 
 ### Alternative Installation Methods
@@ -16,28 +16,43 @@ More information can be found on these install methods and more in [the document
 
 ## Usage
 
-<!-- TODO -->
-This should be a basic description of what this module does.
-Fill this out before completing usage of this template.
-<!-- TODO -->
+This module provisions multiple CloudWatch alarms and can send notifications to Slack via SNS topics and AmazonQ.
+
+It is an opinionated module that will configure CloudWatch alarms with as little manual configuration as possible. See the examples located in the [examples folder](/examples) to see what kind of resources are supported.
 
 Integrate this module like so:
 
 ```hcl
-module "MOD_SHORTNAME" {
-  source = "github.com/pbs/terraform-aws-MOD_NAME?ref=x.y.z"
+module "alarm" {
+  source = "github.com/pbs/terraform-aws-cloudwatch-alarms-module-v2?ref=x.y.z"
 
-  <!-- TODO -->
-  Show some examples of valid values for required parameters.
-  <!-- TODO -->
+  name       = "test-app"
+  alarms     = [
+    {
+      name             = "error-count-alarm"
+      description      = "Alarm if more than 5 errors in 1 minute"
+      slack_channel_id = "C12345678"
+      log_group_name   = "/ecs/test-app-log-group-name"
+      pattern          = "ERROR"
+      metric_name      = "error-count"
+      metric_namespace = "test-app"
+      metric_value     = "1"
+      alarm_threshold  = 5
+      alarm_period     = 60
+      alarm_statistic  = "Sum"
+      treat_missing_data = "notBreaching"
+    }
+  ]
 
   # Tagging Parameters
   organization = var.organization
   environment  = var.environment
   product      = var.product
+  owner        = var.owner
   repo         = var.repo
 
   # Optional Parameters
+  
 }
 ```
 

@@ -1,4 +1,9 @@
-output "hello_world" {
-  description = "Hello World"
-  value       = module.MOD_SHORTNAME.hello_world
+output "arn" {
+  description = "ARN of the alarm provisioned"
+  value       = module.alarm.arns
+}
+
+output "name" {
+  description = "Name of the alarm provisioned"
+  value       = module.alarm[*].names
 }
