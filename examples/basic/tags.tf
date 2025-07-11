@@ -13,7 +13,7 @@ variable "environment" {
 variable "product" {
   description = "Tag used to group resources according to application"
 
-  default = "example-tf-MOD_SHORTNAME-basic"
+  default = "example-tf-cloudwatch-alarms-basic"
 
   validation {
     condition     = can(regex("[a-z\\-]+", var.product))
@@ -21,10 +21,22 @@ variable "product" {
   }
 }
 
+variable "owner" {
+  description = "Tag used to group resources according to owner"
+  type        = string
+
+  default = "example"
+
+  validation {
+    condition     = can(regex("[a-z\\-]+", var.owner))
+    error_message = "The product variable violates approved regex."
+  }
+}
+
 variable "repo" {
   description = "Tag used to point to the repo using this module"
 
-  default = "https://github.com/pbs/terraform-MOD_NAME.git"
+  default = "https://github.com/pbs/terraform-cloudwatch-alarms-module-v2.git"
 
   validation {
     condition     = can(regex("(?:git|ssh|https?|git@[-\\w.]+):(\\/\\/)?(.*?)(\\.git)(\\/?|\\#[-\\d\\w._]+?)$", var.repo))
