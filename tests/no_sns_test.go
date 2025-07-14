@@ -5,5 +5,5 @@ import (
 )
 
 func TestKinesisExample(t *testing.T) {
-	testCloudWatchAlarm(t, "basic")
+	testCloudWatchAlarm(t, "no-sns")
 }

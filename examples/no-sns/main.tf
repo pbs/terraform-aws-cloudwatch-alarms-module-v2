@@ -1,13 +1,13 @@
 module "alarm" {
   source = "../.."
 
-  name = "test-app"
+  name = "test-app-no-sns"
 
   alarms = [
     {
       name               = "error"
       description        = "Alarm if more than 5 errors in 1 minute"
-      slack_channel_id   = "C0123456789"
+      slack_channel_id   = ""
       log_group_name     = "/ecs/test-app"
       pattern            = "ERROR"
       metric_name        = "error-count"
