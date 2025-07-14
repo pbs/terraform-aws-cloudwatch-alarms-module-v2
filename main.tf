@@ -12,15 +12,8 @@ resource "aws_cloudwatch_log_metric_filter" "filter" {
   }
 }
 
-resource "aws_sns_topic" "topic" {
-  for_each = { for alert in var.alarms : alert.name => alert }
-
-  name = "${local.full_name}-${each.value.name}-topic"
-  tags = local.tags
-}
-
 resource "aws_cloudwatch_metric_alarm" "alarm" {
-  for_each = { for alert in var.alarms : alert.name => alert }
+  for_each = { for alarm in var.alarms : alarm.name => alarm }
 
   alarm_name          = "${local.full_name}-${each.value.name}-alarm"
   comparison_operator = "GreaterThanOrEqualToThreshold"
@@ -37,8 +30,15 @@ resource "aws_cloudwatch_metric_alarm" "alarm" {
   tags = local.tags
 }
 
+resource "aws_sns_topic" "topic" {
+  for_each = { for alarm in var.alarms : alarm.name => alarm if alarm.slack_channel_id != "" }
+
+  name = "${local.full_name}-${each.value.name}-topic"
+  tags = local.tags
+}
+
 resource "aws_chatbot_slack_channel_configuration" "slack" {
-  for_each = { for alert in var.alarms : alert.name => alert }
+  for_each = { for alarm in var.alarms : alarm.name => alarm if alarm.slack_channel_id != "" }
 
   configuration_name = "${local.full_name}-${each.value.name}-${each.value.slack_channel_id}"
   slack_channel_id   = each.value.slack_channel_id
